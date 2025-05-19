@@ -1,0 +1,187 @@
+import { ReactNode, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import {
+  Home,
+  LayoutDashboard,
+  Clock,
+  CheckCircle,
+  User,
+  LogOut,
+  Calendar,
+  Menu,
+  X,
+} from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+// import { UserNav } from "@/components/layout/UserNav"; // Comentado temporalmente para evitar error
+import { CartStatusIcon } from "@/components/cart/CartStatusIcon";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // Importación correcta
+
+type ClientLayoutProps = {
+  children: ReactNode;
+  hideCartIconOnMobile?: boolean;
+};
+
+export default function ClientLayout({ children, hideCartIconOnMobile = false }: ClientLayoutProps) {
+  const location = useLocation();
+  const path = location.pathname;
+  const { signOut } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  const navigation = [
+    {
+      name: "Dashboard",
+      href: "/client",
+      icon: LayoutDashboard,
+      current: path === "/client",
+    },
+    {
+      name: "Cuentas Activas",
+      href: "/client/accounts/active",
+      icon: CheckCircle,
+      current: path === "/client/accounts/active",
+    },
+    {
+      name: "Por Vencer",
+      href: "/client/accounts/expiring",
+      icon: Clock,
+      current: path === "/client/accounts/expiring",
+    },
+    {
+      name: "Vencidas",
+      href: "/client/accounts/expired",
+      icon: Calendar,
+      current: path === "/client/accounts/expired",
+    },
+    {
+      name: "Perfil",
+      href: "/client/profile",
+      icon: User,
+      current: path === "/client/profile",
+    },
+  ];
+
+  const toggleDesktopSidebar = () => {
+    setIsDesktopSidebarCollapsed(!isDesktopSidebarCollapsed);
+  };
+
+  return (
+    <div className="min-h-screen flex bg-muted/40">
+      {/* Desktop Sidebar */}
+      <div className={`fixed inset-y-0 left-0 z-30 flex flex-col bg-card border-r border-nytrix-purple/10 transition-all duration-300 ease-in-out ${isDesktopSidebarCollapsed ? 'w-20' : 'w-64'} hidden md:flex`}>
+        <div className={`flex items-center h-16 px-4 border-b border-nytrix-purple/10 flex-shrink-0 ${isDesktopSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+          <Link to="/" className={`items-center space-x-2 overflow-hidden ${isDesktopSidebarCollapsed ? 'hidden' : 'flex'}`}>
+            <span className={`text-xl font-bold text-gradient-nytrix ${isDesktopSidebarCollapsed ? 'hidden' : 'block'}`}>Nytrix</span>
+          </Link>
+          <Button
+            variant="ghost"
+            className={`hidden md:flex p-1 text-foreground/70 hover:text-nytrix-purple`}
+            onClick={toggleDesktopSidebar}
+            title={isDesktopSidebarCollapsed ? "Expandir sidebar" : "Colapsar sidebar"}
+          >
+            {isDesktopSidebarCollapsed ? <Menu className="h-8 w-8" /> : <X className="h-6 w-6" />}
+          </Button>
+        </div>
+        <div className={`flex-1 py-4 space-y-1 ${isDesktopSidebarCollapsed ? 'overflow-y-hidden px-2' : 'overflow-y-auto px-3 custom-sidebar-scroll'}`}>
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              title={item.name}
+              className={`flex items-center space-x-3 rounded-md transition-colors ${isDesktopSidebarCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'} ${
+                item.current
+                  ? "bg-nytrix-purple/20 text-nytrix-purple"
+                  : "text-foreground/70 hover:bg-nytrix-purple/10 hover:text-nytrix-purple"
+              } ${isDesktopSidebarCollapsed ? 'justify-center' : ''}`}
+            >
+              <item.icon className="h-5 w-5 flex-shrink-0" />
+              <span className={`${isDesktopSidebarCollapsed ? 'hidden' : 'block'}`}>{item.name}</span>
+            </Link>
+          ))}
+        </div>
+        <div className="p-4 border-t border-nytrix-purple/10 flex-shrink-0">
+          <Button 
+            variant="ghost" 
+            className={`w-full text-foreground/70 hover:text-destructive ${isDesktopSidebarCollapsed ? 'justify-center' : 'justify-start'}`}
+            onClick={signOut}
+            title="Cerrar Sesión"
+          >
+            <LogOut className={`h-5 w-5 ${isDesktopSidebarCollapsed ? '' : 'mr-2'}`} />
+            <span className={`${isDesktopSidebarCollapsed ? 'hidden' : 'block'}`}>Cerrar Sesión</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Structure with Sheet */}
+      <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
+        <div className={`flex flex-col w-full transition-all duration-300 ease-in-out ${isDesktopSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+          {/* Mobile header */}
+          <div className="md:hidden sticky top-0 z-20 flex items-center justify-between h-16 px-4 bg-card border-b border-nytrix-purple/10">
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={() => setIsMobileSidebarOpen(true)}>
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Alternar Menú</span>
+              </Button>
+            </SheetTrigger>
+            <Link to="/" className="flex items-center">
+              <span className="text-xl font-bold text-gradient-nytrix">Nytrix</span>
+            </Link>
+            {path !== "/client" && !hideCartIconOnMobile && (
+              <div className="flex items-center">
+                <CartStatusIcon />
+              </div>
+            )}
+          </div>
+          
+          {/* Main content */}
+          <main className="flex-1 p-4 md:p-6 overflow-auto">
+            {children}
+          </main>
+        </div>
+
+        {/* Mobile Sidebar Content (SheetContent) */}
+        <SheetContent side="left" className="w-64 bg-card border-r border-nytrix-purple/10 p-0 flex flex-col md:hidden">
+          <div className="flex items-center justify-between h-16 px-4 border-b border-nytrix-purple/10 flex-shrink-0">
+            <Link to="/" className="flex items-center space-x-2" onClick={() => setIsMobileSidebarOpen(false)}>
+              <span className="text-xl font-bold text-gradient-nytrix">Nytrix</span>
+            </Link>
+            {/* El botón de cerrar (X) es manejado por SheetClose, usualmente dentro de SheetContent */}
+          </div>
+          <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-sidebar-scroll">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setIsMobileSidebarOpen(false)} // Cierra el menú al navegar
+                className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
+                  item.current
+                    ? "bg-nytrix-purple/20 text-nytrix-purple"
+                    : "text-foreground/70 hover:bg-nytrix-purple/10 hover:text-nytrix-purple"
+                }`}
+              >
+                <item.icon className="h-5 w-5" />
+                <span>{item.name}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="p-4 border-t border-nytrix-purple/10 flex-shrink-0">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-foreground/70 hover:text-destructive"
+              onClick={() => {
+                signOut();
+                setIsMobileSidebarOpen(false); // Cierra el menú
+              }}
+              title="Cerrar Sesión"
+            >
+              <LogOut className="mr-2 h-5 w-5" />
+              <span>Cerrar Sesión</span>
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}

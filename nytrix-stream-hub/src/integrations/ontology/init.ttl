@@ -1,0 +1,34 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rentas: <http://example.org/ontology/rentas#> .
+
+# Clase Pago
+rentas:Pago rdf:type rdfs:Class .
+
+# Propiedades de Pago
+rentas:idFactura rdf:type rdf:Property ;
+    rdfs:domain rentas:Pago ;
+    rdfs:range xsd:string .
+
+rentas:montoPago rdf:type rdf:Property ;
+    rdfs:domain rentas:Pago ;
+    rdfs:range xsd:decimal .
+
+rentas:metodoPago rdf:type rdf:Property ;
+    rdfs:domain rentas:Pago ;
+    rdfs:range xsd:string .
+
+rentas:fechaPago rdf:type rdf:Property ;
+    rdfs:domain rentas:Pago ;
+    rdfs:range xsd:dateTime .
+
+rentas:estadoPago rdf:type rdf:Property ;
+    rdfs:domain rentas:Pago ;
+    rdfs:range rentas:EstadoPago .
+
+# Estados de Pago
+rentas:EstadoPago rdf:type rdfs:Class .
+rentas:pagado rdf:type rentas:EstadoPago .
+rentas:pendiente rdf:type rentas:EstadoPago .
+rentas:cancelado rdf:type rentas:EstadoPago . 
