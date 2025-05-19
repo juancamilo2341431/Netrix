@@ -1,0 +1,238 @@
+@prefix : <http://example.org/ontology/rentas#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# -- Clases --
+
+:Plataforma rdf:type owl:Class ;
+    rdfs:label "Plataforma"@es ;
+    rdfs:comment "Representa un servicio o plataforma ofrecida."@es .
+
+:Persona rdf:type owl:Class ;
+    rdfs:label "Persona"@es ;
+    rdfs:comment "Representa un usuario o cliente del sistema."@es .
+
+:Cuenta rdf:type owl:Class ;
+    rdfs:label "Cuenta"@es ;
+    rdfs:comment "Representa la cuenta de una persona en una plataforma específica."@es .
+
+:Cupon rdf:type owl:Class ;
+    rdfs:label "Cupón"@es ;
+    rdfs:comment "Representa un cupón de descuento ofrecido por una plataforma."@es .
+
+:CuponPersona rdf:type owl:Class ;
+    rdfs:label "Asignación de Cupón"@es ;
+    rdfs:comment "Representa la asignación de un cupón específico a una persona."@es .
+
+:Renta rdf:type owl:Class ;
+    rdfs:label "Renta"@es ;
+    rdfs:comment "Representa la renta o suscripción a un servicio/cuenta."@es .
+
+:Factura rdf:type owl:Class ;
+    rdfs:label "Factura"@es ;
+    rdfs:comment "Representa la factura generada para una renta."@es .
+
+:Pago rdf:type owl:Class ;
+    rdfs:label "Pago"@es ;
+    rdfs:comment "Representa un pago realizado asociado a una renta y factura."@es .
+
+
+# -- Propiedades de Datos  --
+
+:nombrePlataforma rdf:type owl:DatatypeProperty ;
+    rdfs:label "Nombre de Plataforma"@es ;
+    rdfs:domain :Plataforma ;
+    rdfs:range xsd:string .
+
+:descripcionPlataforma rdf:type owl:DatatypeProperty ;
+    rdfs:label "Descripción de Plataforma"@es ;
+    rdfs:domain :Plataforma ;
+    rdfs:range xsd:string .
+
+:imagenPlataforma rdf:type owl:DatatypeProperty ;
+    rdfs:label "URL de Imagen de Plataforma"@es ;
+    rdfs:domain :Plataforma ;
+    rdfs:range xsd:anyURI . # O xsd:string si es un path
+
+:rolPersona rdf:type owl:DatatypeProperty ;
+    rdfs:label "Rol de Persona"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range xsd:string .
+
+:correoCuenta rdf:type owl:DatatypeProperty ;
+    rdfs:label "Correo de Cuenta"@es ;
+    rdfs:comment "Correo específico usado para esta cuenta en la plataforma (puede ser diferente al de la persona)."@es ;
+    rdfs:domain :Cuenta ;
+    rdfs:range xsd:string . # Se incluye el correo de la cuenta, asumiendo que es menos sensible que el principal de la persona
+
+:nombreCupon rdf:type owl:DatatypeProperty ;
+    rdfs:label "Nombre de Cupón"@es ;
+    rdfs:domain :Cupon ;
+    rdfs:range xsd:string .
+
+:codigoCupon rdf:type owl:DatatypeProperty ;
+    rdfs:label "Código de Cupón"@es ;
+    rdfs:domain :Cupon ;
+    rdfs:range xsd:string .
+
+:descripcionCupon rdf:type owl:DatatypeProperty ;
+    rdfs:label "Descripción de Cupón"@es ;
+    rdfs:domain :Cupon ;
+    rdfs:range xsd:string .
+
+:fechaInicioRenta rdf:type owl:DatatypeProperty ;
+    rdfs:label "Fecha Inicio Renta"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range xsd:dateTime .
+
+:fechaFinRenta rdf:type owl:DatatypeProperty ;
+    rdfs:label "Fecha Fin Renta"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range xsd:dateTime .
+
+:fechaEmisionFactura rdf:type owl:DatatypeProperty ;
+    rdfs:label "Fecha Emisión Factura"@es ;
+    rdfs:domain :Factura ;
+    rdfs:range xsd:dateTime .
+
+:metodoPago rdf:type owl:DatatypeProperty ;
+    rdfs:label "Método de Pago"@es ;
+    rdfs:domain :Pago ;
+    rdfs:range xsd:string .
+
+:fechaPago rdf:type owl:DatatypeProperty ;
+    rdfs:label "Fecha de Pago"@es ;
+    rdfs:domain :Pago ;
+    rdfs:range xsd:dateTime .
+
+:estado rdf:type owl:DatatypeProperty ;
+    rdfs:label "Estado"@es ;
+    rdfs:comment "Propiedad genérica para el estado de cualquier entidad (Plataforma, Cuenta, Cupón, Renta, Factura, Pago)."@es ;
+    rdfs:domain owl:Thing ; # Aplica a cualquier clase que tenga estado
+    rdfs:range xsd:string .
+
+
+# -- Propiedades de Objeto  --
+
+:tieneCuenta rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene cuenta"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range :Cuenta .
+
+:perteneceAPersona rdf:type owl:ObjectProperty ;
+    rdfs:label "pertenece a persona"@es ;
+    rdfs:domain :Cuenta ;
+    rdfs:range :Persona ;
+    owl:inverseOf :tieneCuenta .
+
+:cuentaEnPlataforma rdf:type owl:ObjectProperty ;
+    rdfs:label "cuenta en plataforma"@es ;
+    rdfs:domain :Cuenta ;
+    rdfs:range :Plataforma .
+
+:tieneCuentasEnPlataforma rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene cuentas en plataforma"@es ;
+    rdfs:domain :Plataforma ;
+    rdfs:range :Cuenta ;
+    owl:inverseOf :cuentaEnPlataforma .
+
+:ofreceCupon rdf:type owl:ObjectProperty ;
+    rdfs:label "ofrece cupón"@es ;
+    rdfs:domain :Plataforma ;
+    rdfs:range :Cupon .
+
+:cuponDePlataforma rdf:type owl:ObjectProperty ;
+    rdfs:label "cupón de plataforma"@es ;
+    rdfs:domain :Cupon ;
+    rdfs:range :Plataforma ;
+    owl:inverseOf :ofreceCupon .
+
+:tieneCuponAsignado rdf:type owl:ObjectProperty ;
+    rdfs:label "tiene cupón asignado"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range :CuponPersona .
+
+:asignadoAPersona rdf:type owl:ObjectProperty ;
+    rdfs:label "asignado a persona"@es ;
+    rdfs:domain :CuponPersona ;
+    rdfs:range :Persona ;
+    owl:inverseOf :tieneCuponAsignado .
+
+:cuponOriginal rdf:type owl:ObjectProperty ;
+    rdfs:label "cupón original"@es ;
+    rdfs:domain :CuponPersona ;
+    rdfs:range :Cupon .
+
+:asignacionesDeCupon rdf:type owl:ObjectProperty ;
+    rdfs:label "asignaciones de cupón"@es ;
+    rdfs:domain :Cupon ;
+    rdfs:range :CuponPersona ;
+    owl:inverseOf :cuponOriginal .
+
+:realizaRenta rdf:type owl:ObjectProperty ;
+    rdfs:label "realiza renta"@es ;
+    rdfs:domain :Persona ;
+    rdfs:range :Renta .
+
+:rentaRealizadaPor rdf:type owl:ObjectProperty ;
+    rdfs:label "renta realizada por"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range :Persona ;
+    owl:inverseOf :realizaRenta .
+
+:rentaUtilizaCuenta rdf:type owl:ObjectProperty ;
+    rdfs:label "renta utiliza cuenta"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range :Cuenta .
+
+:cuentaUtilizadaEnRenta rdf:type owl:ObjectProperty ;
+    rdfs:label "cuenta utilizada en renta"@es ;
+    rdfs:domain :Cuenta ;
+    rdfs:range :Renta ;
+    owl:inverseOf :rentaUtilizaCuenta .
+
+:rentaAplicaCuponAsignado rdf:type owl:ObjectProperty ;
+    rdfs:label "renta aplica cupón asignado"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range :CuponPersona . # Relación opcional (0 o 1)
+
+:cuponAsignadoAplicadoEnRenta rdf:type owl:ObjectProperty ;
+    rdfs:label "cupón asignado aplicado en renta"@es ;
+    rdfs:domain :CuponPersona ;
+    rdfs:range :Renta ;
+    owl:inverseOf :rentaAplicaCuponAsignado .
+
+:rentaGeneraFactura rdf:type owl:ObjectProperty ;
+    rdfs:label "renta genera factura"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range :Factura . # Asumiendo 1 a 1 por la FK UNIQUE en SQL
+
+:facturaDeRenta rdf:type owl:ObjectProperty ;
+    rdfs:label "factura de renta"@es ;
+    rdfs:domain :Factura ;
+    rdfs:range :Renta ;
+    owl:inverseOf :rentaGeneraFactura .
+
+:rentaTienePago rdf:type owl:ObjectProperty ;
+    rdfs:label "renta tiene pago"@es ;
+    rdfs:domain :Renta ;
+    rdfs:range :Pago .
+
+:pagoDeRenta rdf:type owl:ObjectProperty ;
+    rdfs:label "pago de renta"@es ;
+    rdfs:domain :Pago ;
+    rdfs:range :Renta ;
+    owl:inverseOf :rentaTienePago .
+
+:facturaTienePago rdf:type owl:ObjectProperty ;
+    rdfs:label "factura tiene pago"@es ;
+    rdfs:domain :Factura ;
+    rdfs:range :Pago .
+
+:pagoDeFactura rdf:type owl:ObjectProperty ;
+    rdfs:label "pago de factura"@es ;
+    rdfs:domain :Pago ;
+    rdfs:range :Factura ;
+    owl:inverseOf :facturaTienePago .

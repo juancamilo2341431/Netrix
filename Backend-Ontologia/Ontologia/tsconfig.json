@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2016", // O una versión más reciente como ES2020, ESNext
+    "module": "CommonJS", // Sistema de módulos para Node.js
+    "outDir": "./dist", // Carpeta donde se guardará el JavaScript compilado
+    "rootDir": "./src", // Carpeta raíz del código fuente TypeScript
+    "strict": true, // Habilita todas las verificaciones estrictas de tipos
+    "esModuleInterop": true, // Permite interoperabilidad con módulos CommonJS
+    "skipLibCheck": true, // Omite la verificación de tipos en archivos de declaración (.d.ts)
+    "forceConsistentCasingInFileNames": true, // Asegura consistencia en mayúsculas/minúsculas de nombres de archivo
+    "resolveJsonModule": true, // Permite importar archivos .json
+     "moduleResolution": "node", // Estrategia de resolución de módulos
+     "sourceMap": true, // Genera source maps para debugging
+     "baseUrl": ".", // Directorio base para resolver rutas no relativas
+     "paths": { // Opcional: alias para rutas
+       "@config/*": ["src/config/*"],
+       "@controllers/*": ["src/controllers/*"],
+       "@routes/*": ["src/routes/*"],
+       "@services/*": ["src/services/*"],
+       "@types/*": ["src/types/*"],
+       "@utils/*": ["src/utils/*"]
+     }
+  },
+  "include": ["src/**/*"], // Incluye todos los archivos dentro de la carpeta src
+  "exclude": ["node_modules", "**/*.spec.ts"] // Excluye node_modules y archivos de prueba
+}
